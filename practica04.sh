@@ -3,6 +3,7 @@ sudo apt-get install python-setuptools
 sudo apt-get install python-pip  
 sudo pip install pyTelegramBotAPI  
 sudo apt-get install sysstat  
+
 sudo chown -R pi:pi /home/pi/pyTelegramApi  
 cd /home/pi/pyTelegramBotApi  
 sudo python setup.py install  
@@ -49,4 +50,4 @@ sysstat is already the newest version (12.6.1-1).
 # ********************************
 # 6
 # ********************************
-gfons@raspberrypi:/ $ mkdir /home/gfons/pyTelegramApi
+7278491826:AAErSRgcXVHu3LE-JfIwqvwXuAY9XBnFjE8
