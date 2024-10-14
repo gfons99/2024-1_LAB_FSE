@@ -14,7 +14,7 @@
 
 // Constants
 #define VAREF 5.0           // Reference voltage for the ADC
-#define I2C_SLAVE_ADDR 0x0A
+#define I2C_SLAVE_ADDR 0x08
 #define BOARD_LED 13
 
 // Global variables
