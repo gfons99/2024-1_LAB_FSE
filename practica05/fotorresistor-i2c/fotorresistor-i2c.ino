@@ -1,84 +1,93 @@
-/*
-* arduino-photoresistor.cpp
-*
-* Author:  Mauricio Matamoros
-* Date:    2020.03.01
-* License: MIT
-*
-* Reads the analog input from A0 using a photoresistor with a voltage divider
-* and sends the value via I2C bus.
-*
-*/
-
 #include <Wire.h>
 
 // Constants
-#define VAREF 5.0           // Reference voltage for the ADC
-#define I2C_SLAVE_ADDR 0x08
-#define BOARD_LED 13
+#define VAREF 5.0           // Reference voltage for the ADC (typically 5V on most Arduino boards)
+#define I2C_SLAVE_ADDR 0x08 // I2C address of the slave device
+#define BOARD_LED 13        // Pin number for the onboard LED
 
 // Global variables
-float light_intensity = 0;
+float light_intensity = 0;  // Variable to store the calculated light intensity (in volts)
 
-// Prototypes
-void i2c_received_handler(int count);
-void i2c_request_handler(int count);
-float read_light(void);
+// Function prototypes
+void i2c_received_handler(int count); // Function to handle received I2C data
+void i2c_request_handler();           // Function to handle I2C data requests
+float read_light();                   // Function to read the light intensity from the sensor
 
 /**
-* Setup the Arduino
+* Arduino setup function
+* This function configures the necessary hardware, including ADC settings, I2C communication,
+* and the serial port for debugging.
 */
 void setup(void){
-	// Configure ADC to use voltage reference from AREF pin (external)
+	// Set the ADC to use an external voltage reference (AREF pin) if connected
 	analogReference(EXTERNAL);
 
-	// Configure I2C to run in slave mode with the defined address
+	// Initialize the Arduino as an I2C slave with the defined address
 	Wire.begin(I2C_SLAVE_ADDR);
-	// Configure the handler for received I2C data
-	Wire.onReceive(i2c_received_handler);
-	// Configure the handler for request of data via I2C
+	// Register the function to handle I2C data requests from the master
 	Wire.onRequest(i2c_request_handler);
+	// Register the function to handle incoming data via I2C
+	Wire.onReceive(i2c_received_handler);
 
-	// Setup the serial port to operate at 56.6kbps
+	// Initialize the serial port for debugging at 56,600 bps
 	Serial.begin(56600);
 
-	// Setup board led
+	// Set the pin mode for the onboard LED as output
 	pinMode(BOARD_LED, OUTPUT);
 }
 
 /**
-* Handles data requests received via the I2C bus
-* It will immediately send the light intensity read as a float value
+* I2C request handler
+* This function is called whenever the master device requests data from the slave.
+* It sends the current light intensity as a float value over the I2C bus.
 */
 void i2c_request_handler(){
-	Wire.write((byte*) &light_intensity, sizeof(float));
+	Wire.write((byte*) &light_intensity, sizeof(float)); // Send the light intensity via I2C
 }
 
 /**
-* Handles received data via the I2C bus.
-* Data is forwarded to the Serial port and makes the board led blink
+* I2C received handler
+* This function is called when data is received via the I2C bus.
+* It reads the incoming data, prints it to the serial monitor, and controls the LED state.
 */
 void i2c_received_handler(int count){
 	char received = 0;
-	while (Wire.available()){
-		received = (char)Wire.read();
+	while (Wire.available()){   // Check if data is available to read
+		received = (char)Wire.read();  // Read the incoming byte
+		// Control the LED: turn it on if data is non-zero, turn it off if zero
 		digitalWrite(BOARD_LED, received ? HIGH : LOW);
+		// Print the received data to the serial monitor for debugging
 		Serial.println(received);
 	}
 }
 
-// 
+/**
+* Reads the light intensity from the analog sensor
+* This function reads the analog value from pin A0, converts it to a voltage,
+* and returns the result as a float.
+* 
+* @return The voltage corresponding to the light intensity (in volts).
+*/
 float read_light(void){
-	int sensorValue = analogRead(0);
+	int sensorValue = analogRead(0);   // Read the analog value from A0 (range 0 to 1023)
+	// Convert the analog value to a voltage based on the reference voltage (VAREF)
 	float voltage = VAREF * (sensorValue / 1024.0);
-	return voltage;
+	return voltage;  // Return the calculated voltage
 }
 
+/**
+* Arduino main loop function
+* This function continuously reads the light intensity, stores the value, prints it for debugging,
+* and adds a delay between readings.
+*/
 void loop(){
-	// Read the light intensity and store it
+	// Read the current light intensity and store it in the global variable
 	light_intensity = read_light();
-	// Print the light intensity for debugging
+	
+	// Print the light intensity (in volts) to the serial monitor for debugging
 	Serial.print("Light intensity (V): ");
 	Serial.println(light_intensity);
+	
+	// Add a delay of 100 milliseconds before the next reading
 	delay(100);
 }
