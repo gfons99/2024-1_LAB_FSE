@@ -6,11 +6,11 @@
 #define BOARD_LED 13        // Pin number for the onboard LED
 
 // Global variables
-float analog0 = 0;  // Variable to store the calculated light intensity (in volts)
-float analog1 = 0;  // Variable to store the calculated light intensity (in volts)
-float analog2 = 0;  // Variable to store the calculated light intensity (in volts)
-float analog3 = 0;  // Variable to store the calculated light intensity (in volts)
-float analog6 = 0;  // Variable to store the calculated light intensity (in volts)
+float analog0 = 0;
+float analog1 = 0;
+float analog2 = 0;
+float analog3 = 0;
+float analog6 = 0;
 
 // Function prototypes
 void i2c_received_handler(int count); // Function to handle received I2C data
