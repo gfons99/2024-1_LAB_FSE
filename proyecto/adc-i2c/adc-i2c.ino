@@ -46,7 +46,11 @@ void setup(void){
 * It sends the current light intensity as a float value over the I2C bus.
 */
 void i2c_request_handler(){
-	Wire.write((byte*) &analog0, sizeof(float)); // Send the light intensity via I2C
+	Wire.write((byte*) &analog0, sizeof(float));
+	Wire.write((byte*) &analog1, sizeof(float));
+	Wire.write((byte*) &analog2, sizeof(float));
+	Wire.write((byte*) &analog3, sizeof(float));
+	Wire.write((byte*) &analog6, sizeof(float));
 }
 
 /**
@@ -110,19 +114,19 @@ void loop(){
 	analog6 = read_light();
 	
 	// ? [bits]
-	Serial.print("analog0: ");
+	Serial.print("conductivity: ");
 	Serial.println(analog0);
 	// ? [bits]
-	Serial.print("analog1: ");
+	Serial.print("turbidity: ");
 	Serial.println(analog1);
 	// ? [bits]
-	Serial.print("analog2: ");
+	Serial.print("ph_temp: ");
 	Serial.println(analog2);
 	// ? [bits]
-	Serial.print("analog3: ");
+	Serial.print("ph_ph: ");
 	Serial.println(analog3);
 	// Print the light intensity (in volts) to the serial monitor for debugging
-	Serial.print("Light intensity (V): ");
+	Serial.print("ligh: ");
 	Serial.println(analog6);
 	
 	// Add a delay of 100 milliseconds before the next reading
