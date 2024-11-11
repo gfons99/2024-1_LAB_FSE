@@ -48,8 +48,8 @@ async def boton(update: Update, context):
     await mostrar_menu(update, context)
 
 async def procesar_sensor_1(consulta):
-	 try:
-            # Prepare to read 20 bytes from the I2C slave (5 floats * 4 bytes each)
+	'''try:
+	# Prepare to read 20 bytes from the I2C slave (5 floats * 4 bytes each)
             msg = smbus2.i2c_msg.read(SLAVE_ADDR, 20)
             # Execute the read request on the I2C bus
             i2c.i2c_rdwr(msg)
@@ -63,27 +63,28 @@ async def procesar_sensor_1(consulta):
             
             # Print each received analog value formatted to two decimal places
             
-            print(analog_values[0])            
+              
             # Use the first analog value (analog0) to control the LED brightness
             # Normalize to a value between 0 and 1 for PWM control
             normalized_value = min(max(analog_values[0] / 5.0, 0), 1)
             led.value = normalized_value
         
-          except Exception as e:
+	except Exception as e:
             # Handle any errors that occur during the reading process
             print("Error reading analog values:", e)
-        
-       	  time.sleep(1)  # Pause for 1 second before the next reading
+	await consulta.edit_message_text(analog_values[3])'''
+	await consulta.edit_message_text(text="Procesando... Sensor de humedad.")
 
 async def procesar_sensor_2(consulta):
     await consulta.edit_message_text(text="Procesando... Sensor de humedad.")
-
+   # await consulta.edit_message_text(text="chamaca miada.")
 async def procesar_sensor_3(consulta):
     await consulta.edit_message_text(text="Procesando... Sensor de luz.")
 
 async def procesar_sensor_4(consulta):
     await consulta.edit_message_text(text="Procesando... Sensor de movimiento.")
 
+ 
 async def procesar_sensor_5(consulta):
     await consulta.edit_message_text(text="Procesando... Sensor de presión.")
 
@@ -96,7 +97,7 @@ async def mostrar_menu(update: Update, context):
         [InlineKeyboardButton("Encender luz interior", callback_data='sensor_5')]
     ]
     reply_markup = InlineKeyboardMarkup(teclado)
-    await update.callback_query.message.edit_text('Bienvenido, selecciona la opcion de tu preferencia:', reply_markup=reply_markup)
+    
 
 def main():
     application = Application.builder().token(TOKEN).build()
@@ -109,10 +110,9 @@ def main():
     analog_thread = threading.Thread(target=read_analog_values)
     analog_thread.daemon = True  # Set as daemon thread to exit when the main program exits
     analog_thread.start()
-
-    # Keep the main program running indefinitely
     while True:
         time.sleep(1)
+    
 
 if __name__ == '__main__':
     main()
