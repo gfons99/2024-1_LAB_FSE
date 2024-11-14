@@ -159,11 +159,11 @@ async def procesar_un_sensor(consulta, index, parametro):
 async def procesar_reporte(consulta):
     await consulta.edit_message_text(text="Procesando... Reporte.")
 
-    await procesar_un_sensor("conductividad", consulta)
-    await procesar_un_sensor("turbidez", consulta)
-    await procesar_un_sensor("temperatura", consulta)
-    await procesar_un_sensor("ph", consulta)
-    await procesar_un_sensor("luminosidad", consulta)
+    await procesar_un_sensor(consulta, 0, "conductividad", )
+    await procesar_un_sensor(consulta, 1, "turbidez")
+    await procesar_un_sensor(consulta, 2, "temperatura")
+    await procesar_un_sensor(consulta, 3, "ph")
+    await procesar_un_sensor(consulta, 4, "luminosidad")
 
 
 async def procesar_sensor_4(consulta):
