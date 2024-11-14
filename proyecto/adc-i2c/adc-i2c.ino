@@ -128,6 +128,7 @@ void loop(){
 	// Print the light intensity (in volts) to the serial monitor for debugging
 	Serial.print("ligh: ");
 	Serial.println(analog6);
+  Serial.println();
 	
 	// Add a delay of 100 milliseconds before the next reading
 	delay(100);
