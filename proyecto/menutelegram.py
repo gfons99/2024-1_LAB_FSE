@@ -159,11 +159,30 @@ async def procesar_un_sensor(consulta, index, parametro):
 async def procesar_reporte(consulta):
     await consulta.edit_message_text(text="Procesando... Reporte.")
 
-    await procesar_un_sensor(consulta, 0, "conductividad", )
-    await procesar_un_sensor(consulta, 1, "turbidez")
-    await procesar_un_sensor(consulta, 2, "temperatura")
-    await procesar_un_sensor(consulta, 3, "ph")
-    await procesar_un_sensor(consulta, 4, "luminosidad")
+    try:
+        # Define names for each analog value
+        value_names = ["Temperature", "Humidity", "Pressure", "Light", "Voltage"]
+
+        # Simulate reading sensor values (replace with actual sensor reading code)
+        msg = smbus2.i2c_msg.read(SLAVE_ADDR, 20)
+        i2c.i2c_rdwr(msg)
+        data = list(msg)
+        ba = bytearray(data)
+        analog_values = struct.unpack('<fffff', ba)
+
+        # Format each analog value with its corresponding name
+        analog_values_str = '\n'.join(f"{name}: {val:.2f} V" for name, val in zip(value_names, analog_values))
+
+        # Display each named value on a new line
+        await consulta.edit_message_text(text=f"Analog Values:\n{analog_values_str}")
+    except Exception as e:
+        await consulta.edit_message_text(text=f"Error reading sensor: {str(e)}")
+
+    # await procesar_un_sensor(consulta, 0, "conductividad", )
+    # await procesar_un_sensor(consulta, 1, "turbidez")
+    # await procesar_un_sensor(consulta, 2, "temperatura")
+    # await procesar_un_sensor(consulta, 3, "ph")
+    # await procesar_un_sensor(consulta, 4, "luminosidad")
 
 
 async def procesar_sensor_4(consulta):
